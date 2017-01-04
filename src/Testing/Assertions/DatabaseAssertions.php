@@ -7,6 +7,7 @@
 
 namespace EdStevo\Helpers\Testing\Assertions;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use PHPUnit_Framework_Assert as PHPUnit;
 
@@ -79,9 +80,36 @@ trait DatabaseAssertions
      *
      * @return $this
      */
-    protected function assertInDatabase($table, array $array = [])
+    protected function assertInDatabase($data, string $table = null)
     {
-        PHPUnit::assertGreaterThan(0, $this->getTableCount($table), 'Some data was expected to be in the table ' . $table . ' when it wasn\'t.');
+        if ($data instanceof Model)
+        {
+            $table      = $data->getTable();
+            $data       = $data->toArray();
+        }
+
+        PHPUnit::assertGreaterThan(0, $this->getTableCount($table, $data), 'Some data was expected to be in the table ' . $table . ' when it wasn\'t.');
+
+        return $this;
+    }
+
+    /**
+     * Assert that some data is in the database
+     *
+     * @param       $table
+     * @param array $array
+     *
+     * @return $this
+     */
+    protected function assertNotInDatabase($data, string $table = null)
+    {
+        if ($data instanceof Model)
+        {
+            $table      = $data->getTable();
+            $data       = $data->toArray();
+        }
+
+        PHPUnit::assertEquals(0, $this->getTableCount($table, $data), 'Some data was expected to not be in the table ' . $table . ' when it was.');
 
         return $this;
     }
