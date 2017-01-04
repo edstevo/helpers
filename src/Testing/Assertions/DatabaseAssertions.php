@@ -7,6 +7,7 @@
 
 namespace EdStevo\Helpers\Testing\Assertions;
 
+use Illuminate\Support\Facades\DB;
 use PHPUnit_Framework_Assert as PHPUnit;
 
 trait DatabaseAssertions
@@ -33,5 +34,45 @@ trait DatabaseAssertions
         ));
 
         return $this;
+    }
+
+    /**
+     * Test that a database table is empty
+     *
+     * @param string $table
+     *
+     * @return $this
+     */
+    protected function assertTableEmpty(string $table)
+    {
+        PHPUnit::assertEquals($this->getTableCount($table), 0, 'The table ' . $table . ' was not empty when it was expected to be.');
+
+        return $this;
+    }
+
+    /**
+     * Test that a table is not empty
+     *
+     * @param string $table
+     *
+     * @return $this
+     */
+    protected function assertTableNotEmpty(string $table)
+    {
+        PHPUnit::assertGreaterThan(0, $this->getTableCount($table), 'The table ' . $table . ' was empty when it was expected to be.');
+
+        return $this;
+    }
+
+    /**
+     * Count rows in a table
+     *
+     * @param string $table
+     *
+     * @return mixed
+     */
+    private function getTableCount(string $table)
+    {
+        return DB::table($table)->count();
     }
 }
