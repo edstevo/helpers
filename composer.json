@@ -1,0 +1,12 @@
+{
+    "name": "edstevo/helpers",
+    "description": "Package with helpers to speed up workflow",
+    "type": "library",
+    "authors": [
+        {
+            "name": "edstevo",
+            "email": "edward.stephenson@me.com"
+        }
+    ],
+    "require": {}
+}
