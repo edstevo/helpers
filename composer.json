@@ -4,9 +4,17 @@
     "type": "library",
     "authors": [
         {
-            "name": "edstevo",
+            "name": "Ed Stephenson",
             "email": "edward.stephenson@me.com"
         }
     ],
-    "require": {}
+    "autoload": {
+        "psr-4": {
+            "EdStevo\\Generators\\": "src/"
+        }
+    },
+    "require": {
+        "php": ">=7",
+        "laravel/framework": "5.3.*"
+    }
 }
