@@ -7,6 +7,7 @@
 
 namespace EdStevo\Helpers\Testing\Assertions;
 
+use EdStevo\Generators\Dao\DaoModel;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use PHPUnit_Framework_Assert as PHPUnit;
@@ -103,14 +104,27 @@ trait DatabaseAssertions
      */
     protected function assertNotInDatabase($data, string $table = null)
     {
-        if ($data instanceof Model)
+        if ($data instanceof DaoModel)
         {
             $table      = $data->getTable();
-            $data       = $data->toArray();
+            $data       = $this->extractModelData($data);
         }
 
         PHPUnit::assertEquals(0, $this->getTableCount($table, $data), 'Some data was expected to not be in the table ' . $table . ' when it was.');
 
         return $this;
+    }
+
+    private function extractModelData(DaoModel $model) : array
+    {
+        $data       = $model->toArray();
+        $appends    = $model->getAppends();
+
+        foreach($appends as $field)
+        {
+            unset($data[$field]);
+        }
+
+        return $data;
     }
 }
