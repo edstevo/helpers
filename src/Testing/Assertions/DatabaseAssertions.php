@@ -24,12 +24,7 @@ trait DatabaseAssertions
      */
     protected function countInDatabase(string $table, array $data, int $expectedCount)
     {
-        $database       = app()->make('db');
-        $connection     = $database->getDefaultConnection();
-
-        $actualCount    = $database->connection($connection)->table($table)->where($data)->count();
-
-        PHPUnit::assertEquals($expectedCount, $actualCount, sprintf(
+        PHPUnit::assertEquals($expectedCount, $this->getTableCount($table, $data), sprintf(
             'Unable to find the number of rows specified in database table [%s] that matched attributes [%s].', $table, json_encode($data)
         ));
 
