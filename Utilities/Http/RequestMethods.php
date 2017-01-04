@@ -19,20 +19,38 @@ trait RequestMethods
      *
      * @return array
      */
-    public function getRequestData($request, array $extra_fields = []) : array
+    public function getRequestData($request, array $extra_fields = [])
     {
-        $rules          = $request->rules();
-        $request_keys   = collect($rules)->keys()->merge($extra_fields)->filter(function($item) {
-            return (!str_contains($item, ".*"));
-        })->toArray();
+        $request_keys   = collect($request->rules())->keys();
+        $request_keys   = $request_keys->merge($extra_fields);
 
-        $data           = $request->only($request_keys);
+        $request_keys   = $request_keys->map(function($item, $key) {
+            return $item;
+        });
 
-        foreach($data as $key => $value)
-        {
-            if (!str_contains('nullable', $rules[$key]) && is_null($value))
+        $data           = $request->only($request_keys->toArray());
+        $data           = $this->decodeArrays($data);
+
+        return $data;
+    }
+
+    private function decodeArrays($data)
+    {
+        foreach($data as $parent_key => $item) {
+
+            if (is_array($item))
             {
-                unset($data[$key]);
+
+                foreach($data[$parent_key]['*'] as $value_key => $values)
+                {
+
+                    foreach($values as $key => $value)
+                    {
+                        $data[$parent_key][$key][$value_key]   = $value;
+                    }
+                }
+
+                unset($data[$parent_key]['*']);
             }
         }
 
