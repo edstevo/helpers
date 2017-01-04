@@ -71,8 +71,23 @@ trait DatabaseAssertions
      *
      * @return mixed
      */
-    private function getTableCount(string $table)
+    private function getTableCount(string $table, array $data = [])
     {
-        return DB::table($table)->count();
+        return DB::table($table)->where($data)->count();
+    }
+
+    /**
+     * Assert that some data is in the database
+     *
+     * @param       $table
+     * @param array $array
+     *
+     * @return $this
+     */
+    protected function assertInDatabase($table, array $array = [])
+    {
+        PHPUnit::assertGreaterThan(0, $this->getTableCount($table), 'Some data was expected to be in the table ' . $table . ' when it wasn\'t.');
+
+        return $this;
     }
 }
