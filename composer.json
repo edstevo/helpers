@@ -10,7 +10,7 @@
     ],
     "autoload": {
         "psr-4": {
-            "EdStevo\\Generators\\": "src/"
+            "EdStevo\\Helpers\\": "src/"
         }
     },
     "require": {
